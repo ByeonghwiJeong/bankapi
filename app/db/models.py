@@ -15,6 +15,7 @@ class DbAccount(Base):
     limit = Column(Integer, default=0)
     balance = Column(BigInteger, default=0)
     cards = relationship("DbCard", back_populates="account")
+    transactions = relationship("DbTransaction", back_populates="account")
 
 
 class DbCard(Base):
@@ -25,7 +26,7 @@ class DbCard(Base):
     is_active = Column(Boolean, default=True)
     account_id = Column(Integer, ForeignKey("accounts.id"))
     account = relationship("DbAccount", back_populates="cards")
-
+    transactions = relationship("DbTransaction", back_populates="card")
 
 class TransactionType(PyEnum):
     DEPOSIT = "deposit"
