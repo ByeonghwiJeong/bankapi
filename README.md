@@ -2,19 +2,19 @@
 
 ## 요구사항 구현 리스트
 
-[x] ~~Create user account~~
-[x] ~~Register cards(plural!)~~
-[x] ~~Disable card~~
-[x] ~~Enable card~~
-[x] ~~Check account balance~~
-[x] ~~Withdraw cash~~
-[x] ~~Deposit cash~~
-[x] ~~Use ANY Relational Database~~
+[x] Create user account
+[x] Register cards(plural!)
+[x] Disable card
+[x] Enable card
+[x] Check account balance
+[x] Withdraw cash
+[x] Deposit cash
+[x] Use ANY Relational Database
 [ ] Complete the tests(using pytest)
 [ ] Use Port and Adapater architecture
-[x] ~~Apply 'State pattern' to manage card's state~~
+[x] Apply 'State pattern' to manage card's state
 [ ] Proper implementation of logging
-[x] ~~withdrawal of money that's more than a certain amount of money.~~
+[x] withdrawal of money that's more than a certain amount of money.
 
 <img width="10000" alt="image" src="https://github.com/ByeonghwiJeong/Algorithm_Study/assets/95831345/b25f98cd-5c40-4929-b6bb-aa0df96a7703">
 <br>
