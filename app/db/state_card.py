@@ -30,7 +30,7 @@ class State(ABC):
 
 class ActiveCard(State):
     def status(self):
-        return "Active"
+        return True
 
     def change_state(self, card_state: Card):
         card_state.setState(InactiveCard())
@@ -38,7 +38,7 @@ class ActiveCard(State):
 
 class InactiveCard(State):
     def status(self):
-        return "Inactive"
+        return False
 
     def change_state(self, card_state: Card):
         card_state.setState(ActiveCard())

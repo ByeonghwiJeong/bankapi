@@ -33,7 +33,13 @@ class RegisterCard(BaseModel):
             }
         }
 
-
+class UpdateCard(BaseModel):
+    password: str = Field(
+        ...,
+        title="Card Password",
+        regex="^\d{4}$",
+    )
+    number: str
 
 class Card(BaseModel):
     id: int
