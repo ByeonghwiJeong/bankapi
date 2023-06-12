@@ -5,11 +5,11 @@ from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     create_async_engine,
     AsyncSession,
-    async_scoped_session
+    async_scoped_session,
 )
 from sqlalchemy.orm import sessionmaker
 from app.config import get_db_uri
-
+from app.db.database import Base
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -18,13 +18,20 @@ def event_loop():
     yield loop
     loop.close()
 
+
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def aio_engine():
     engine: AsyncEngine = create_async_engine(get_db_uri(), future=True)
 
     # Write initial set up and teardown code.
 
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
     yield engine
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest_asyncio.fixture(scope="function")
