@@ -33,3 +33,12 @@ async def withdraw(
     account_id: int = None,
 ):
     return db_account.db_withdraw(request, db, account_id)
+
+
+@router.post("/{account_id}/deposit")
+async def deposit(
+    request: CardAuth,
+    db: Session = Depends(get_db),
+    account_id: int = None,
+):
+    return db_account.db_deposit(request, db, account_id)
