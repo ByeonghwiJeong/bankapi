@@ -15,6 +15,10 @@
 [ ] Proper implementation of logging
 [x] ~~withdrawal of money that's more than a certain amount of money.~~
 
+<img width="10000" alt="image" src="https://github.com/ByeonghwiJeong/Algorithm_Study/assets/95831345/b25f98cd-5c40-4929-b6bb-aa0df96a7703">
+<br>
+
+
 ## Bering Bank
 Build a simulation of 'Bering Bank' that allows users to perform the following operations:
 - Create user account
