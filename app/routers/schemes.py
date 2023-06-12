@@ -16,3 +16,16 @@ class Account(BaseModel):
                 "password": "12341234!",
             }
         }
+
+
+class OAuth2PasswordRequest(BaseModel):
+    number: str = Field(..., example="010-4234-5678")
+    password: str = Field(..., example="12341234!")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "number": "010-4234-5678",
+                "password": "12341234!",
+            }
+        }

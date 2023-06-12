@@ -29,6 +29,8 @@ python-dotenv = "^1.0.0"
 pymysql = "^1.0.3"
 passlib = "^1.7.4"
 bcrypt = "^4.0.1"
+python-jose = "^3.3.0"
+python-multipart = "^0.0.6"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "*"
@@ -42,6 +44,7 @@ pytest-env = "*"
 pytest-dotenv = "*"
 types-requests = "*"
 debugpy = "*"
+black = "^23.3.0"
 
 
 [build-system]
