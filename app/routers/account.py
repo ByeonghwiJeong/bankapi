@@ -1,5 +1,5 @@
 from sqlalchemy.orm.session import Session
-from app.routers.schemes import Account, AccountAuth
+from app.routers.schemes import Account, AccountAuth, CardAuth
 from app.db.database import get_db
 from app.auth.oauth2 import get_current_account
 from app.db import db_account
@@ -24,3 +24,12 @@ async def get_balance(
     current_account: AccountAuth = Depends(get_current_account),
 ):
     return db_account.get_balance(db, account_id, current_account)
+
+
+@router.post("/{account_id}/withdraw")
+async def withdraw(
+    request: CardAuth,
+    db: Session = Depends(get_db),
+    account_id: int = None,
+):
+    return db_account.db_withdraw(request, db, account_id)

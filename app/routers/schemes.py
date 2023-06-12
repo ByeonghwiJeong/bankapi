@@ -47,3 +47,13 @@ class Card(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class CardAuth(BaseModel):
+    number: str
+    password: str = Field(
+        ...,
+        title="Card Password",
+        regex="^\d{4}$",
+    )
+    amount: int
