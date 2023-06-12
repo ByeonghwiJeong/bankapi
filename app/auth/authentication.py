@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm.session import Session
+# from sqlalchemy.orm.session import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from app.db.database import get_db
 from app.db.models import DbAccount
@@ -12,10 +14,13 @@ router = APIRouter(tags=["authentication"])
 
 
 @router.post("/login")
-def login(
-    request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+async def login(
+    request: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
 ):
-    account = db.query(DbAccount).filter(DbAccount.username == request.username).first()
+    # account = db.query(DbAccount).filter(DbAccount.username == request.username).first()
+    query = select(DbAccount).where(DbAccount.username == request.username)
+    result = await db.execute(query)
+    account = result.scalars().first()
     if not account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Invalid credentials"

@@ -18,7 +18,8 @@ app.include_router(card.router)
 #     return {"message": "Hello World!"}
 
 
-models.Base.metadata.create_all(engine)
+# models.Base.metadata.create_all(engine)
+
 
 origins = ["*"]
 

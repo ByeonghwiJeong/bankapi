@@ -1,13 +1,18 @@
 from fastapi import status, HTTPException
 from fastapi.responses import JSONResponse
+# from sqlalchemy.orm.session import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from app.db.models import DbAccount, DbCard, DbTransaction
-from sqlalchemy.orm.session import Session
 from app.db.hashing import Hash
 from app.routers.schemes import AccountAuth
 
 
-def authenticate_and_get_account(db: Session, request: AccountAuth, account_id: int):
-    card = db.query(DbCard).filter(DbCard.number == request.number).first()
+async def authenticate_and_get_account(db: AsyncSession, request: AccountAuth, account_id: int):
+    # card = db.query(DbCard).filter(DbCard.number == request.number).first()
+    query = select(DbCard).where(DbCard.number == request.number)
+    result = await db.execute(query)
+    card = result.scalars().first()
     if not card:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Card not found."
@@ -21,12 +26,15 @@ def authenticate_and_get_account(db: Session, request: AccountAuth, account_id: 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password."
         )
-    account = db.query(DbAccount).filter(DbAccount.id == account_id).first()
+    # account = db.query(DbAccount).filter(DbAccount.id == account_id).first()
+    query = select(DbAccount).where(DbAccount.id == account_id)
+    result = await db.execute(query)
+    account = result.scalars().first()
     return account, card
 
 
-def create_transaction_and_update_balance(
-    db: Session,
+async def create_transaction_and_update_balance(
+    db: AsyncSession,
     request: AccountAuth,
     account: DbAccount,
     card: DbCard,
@@ -54,17 +62,17 @@ def create_transaction_and_update_balance(
     return account, card, transaction
 
 
-def db_withdraw(request: AccountAuth, db: Session, account_id: int):
-    account, card = authenticate_and_get_account(db, request, account_id)
-    account, card, transaction = create_transaction_and_update_balance(
+async def db_withdraw(request: AccountAuth, db: AsyncSession, account_id: int):
+    account, card = await authenticate_and_get_account(db, request, account_id)
+    account, card, transaction = await create_transaction_and_update_balance(
         db, request, account, card, "withdraw"
     )
 
     try:
-        db.commit()
-        db.refresh(account)
-        db.refresh(card)
-        db.refresh(transaction)
+        await db.commit()
+        await db.refresh(account)
+        await db.refresh(card)
+        await db.refresh(transaction)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
@@ -80,17 +88,17 @@ def db_withdraw(request: AccountAuth, db: Session, account_id: int):
         )
 
 
-def db_deposit(request: AccountAuth, db: Session, account_id: int):
-    account, card = authenticate_and_get_account(db, request, account_id)
-    account, card, transaction = create_transaction_and_update_balance(
+async def db_deposit(request: AccountAuth, db: AsyncSession, account_id: int):
+    account, card = await authenticate_and_get_account(db, request, account_id)
+    account, card, transaction = await create_transaction_and_update_balance(
         db, request, account, card, "deposit"
     )
 
     try:
-        db.commit()
-        db.refresh(account)
-        db.refresh(card)
-        db.refresh(transaction)
+        await db.commit()
+        await db.refresh(account)
+        await db.refresh(card)
+        await db.refresh(transaction)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={

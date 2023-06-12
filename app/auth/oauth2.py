@@ -2,10 +2,12 @@ import os
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
+from fastapi.security import OAuth2PasswordBearer
 from fastapi import HTTPException, Depends, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+# from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.db import db_account
@@ -29,8 +31,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def get_current_account(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+async def get_current_account(
+    token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -44,7 +46,7 @@ def get_current_account(
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    account = db_account.get_account_by_username(db, username=username)
+    account = await db_account.get_account_by_username(db, username=username)
     if account is None:
         raise credentials_exception
     return account
