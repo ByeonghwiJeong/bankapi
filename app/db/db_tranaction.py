@@ -9,7 +9,6 @@ from app.routers.schemes import AccountAuth
 
 
 async def authenticate_and_get_account(db: AsyncSession, request: AccountAuth, account_id: int):
-    # card = db.query(DbCard).filter(DbCard.number == request.number).first()
     query = select(DbCard).where(DbCard.number == request.number)
     result = await db.execute(query)
     card = result.scalars().first()
@@ -64,6 +63,12 @@ async def create_transaction_and_update_balance(
 
 async def db_withdraw(request: AccountAuth, db: AsyncSession, account_id: int):
     account, card = await authenticate_and_get_account(db, request, account_id)
+    if account.limit and (request.amount > account.limit):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Withdraw amount exceeds the limit.",
+        )
+
     account, card, transaction = await create_transaction_and_update_balance(
         db, request, account, card, "withdraw"
     )
