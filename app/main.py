@@ -3,18 +3,19 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.database import engine
 from app.db import models
-from app.routers import account
+from app.routers import account, card
 from app.auth import authentication
 
 app = FastAPI()
 
 app.include_router(account.router)
 app.include_router(authentication.router)
+app.include_router(card.router)
 
 
-# @app.get("/")
-# async def root():
-#     return {"message": "Hello World"}
+@app.get("/")
+async def root():
+    return {"message": "Hello World!"}
 
 
 models.Base.metadata.create_all(engine)
