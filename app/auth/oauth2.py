@@ -6,8 +6,6 @@ from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import HTTPException, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-# from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.db import db_account

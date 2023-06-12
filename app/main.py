@@ -13,14 +13,6 @@ app.include_router(authentication.router)
 app.include_router(card.router)
 
 
-# @app.get("/")
-# async def root():
-#     return {"message": "Hello World!"}
-
-
-# models.Base.metadata.create_all(engine)
-
-
 origins = ["*"]
 
 app.add_middleware(

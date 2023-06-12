@@ -1,5 +1,4 @@
 import random
-# from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import DbAccount
@@ -10,7 +9,6 @@ def generate_account_number() -> str:
 
 
 async def check_account_number_exists(db: AsyncSession, number: str) -> bool:
-    # print("dbdbdbdbdbdb Check")
     result = await db.execute(select(DbAccount).where(DbAccount.number == number))
     return result.scalar_one_or_none() is not None
 

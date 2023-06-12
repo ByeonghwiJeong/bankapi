@@ -1,9 +1,8 @@
 from fastapi import status, HTTPException
 from fastapi.responses import JSONResponse
-# from sqlalchemy.orm.session import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.db.models import DbAccount, DbCard, DbTransaction
+from app.db.models import DbAccount
 from app.routers.schemes import Account
 from app.db.hashing import Hash
 from app.db.generate_account_num import create_unique_account_number
@@ -11,7 +10,6 @@ from app.routers.schemes import AccountAuth
 
 
 async def create_account(db: AsyncSession, request: Account):
-    # account = db.query(DbAccount).filter(DbAccount.username == request.username).first()
     query = select(DbAccount).where(DbAccount.username == request.username)
     result = await db.execute(query)
     account = result.scalars().first()
@@ -35,7 +33,6 @@ async def create_account(db: AsyncSession, request: Account):
 
 
 async def get_account_by_username(db: AsyncSession, username: str):
-    # user = db.query(DbAccount).filter(DbAccount.username == username).first()
     query = select(DbAccount).where(DbAccount.username == username)
     result = await db.execute(query)
     account = result.scalars().first()

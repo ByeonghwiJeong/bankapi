@@ -2,7 +2,6 @@ from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-# from sqlalchemy.orm.session import Session
 from app.db.models import DbCard
 from app.routers.schemes import AccountAuth, RegisterCard, UpdateCard
 from app.db.hashing import Hash
@@ -31,7 +30,6 @@ async def register_card(db: AsyncSession, request: RegisterCard, current_account
 async def update_card_activation(
     db: AsyncSession, request: UpdateCard, current_account: AccountAuth
 ):
-    # card = db.query(DbCard).filter(DbCard.number == request.number).first()
     query = select(DbCard).where(DbCard.number == request.number)
     result = await db.execute(query)
     card = result.scalars().first()
