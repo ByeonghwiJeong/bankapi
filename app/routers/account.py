@@ -17,9 +17,10 @@ async def create_account(request: Account, db: Session = Depends(get_db)):
     return db_account.create_account(db, request)
 
 
-@router.get("/balance")
+@router.get("/{account_id}/balance")
 async def get_balance(
     db: Session = Depends(get_db),
+    account_id: int = None,
     current_account: AccountAuth = Depends(get_current_account),
 ):
-    return db_account.get_balance(db, current_account)
+    return db_account.get_balance(db, account_id, current_account)

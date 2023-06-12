@@ -15,21 +15,21 @@ router = APIRouter(tags=["authentication"])
 def login(
     request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
-    user = db.query(DbAccount).filter(DbAccount.username == request.username).first()
-    if not user:
+    account = db.query(DbAccount).filter(DbAccount.username == request.username).first()
+    if not account:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Invalid credentials"
         )
-    if not Hash.verify(user.password, request.password):
+    if not Hash.verify(account.password, request.password):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password"
         )
 
-    access_token = create_access_token(data={"username": user.username})
+    access_token = create_access_token(data={"username": account.username})
 
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "user_id": user.id,
-        "username": user.username,
+        "account_id": account.id,
+        "username": account.username,
     }

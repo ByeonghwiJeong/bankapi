@@ -32,6 +32,11 @@ def get_account_by_username(db: Session, username: str):
   return user
 
 
-def get_balance(db: Session, current_account: AccountAuth):
+def get_balance(db: Session, account_id: int, current_account: AccountAuth):
+    if account_id != current_account.id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="you are not authorized to perform this action.",
+        )
     account = get_account_by_username(db, current_account.username)
     return JSONResponse(status_code=status.HTTP_200_OK, content={"balance": account.balance})
