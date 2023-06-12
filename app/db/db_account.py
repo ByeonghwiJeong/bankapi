@@ -17,7 +17,6 @@ def create_account(db: Session, request: Account):
     new_account = DbAccount(
         username=request.username,
         number=create_unique_account_number(db),
-        # number="11111111111",
         password=Hash.bcrypt(request.password),
     )
     db.add(new_account)
@@ -49,98 +48,3 @@ def get_balance(db: Session, account_id: int, current_account: AccountAuth):
     return JSONResponse(
         status_code=status.HTTP_200_OK, content={"balance": account.balance}
     )
-
-
-def db_withdraw(request: AccountAuth, db: Session, account_id: int):
-    card = db.query(DbCard).filter(DbCard.number == request.number).first()
-    if not card.account_id == account_id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="you are not authorized to perform this action.",
-        )
-    if not card:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Card not found."
-        )
-    if not Hash.verify(card.password, request.password):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password."
-        )
-    account = db.query(DbAccount).filter(DbAccount.id == account_id).first()
-    if account.balance < request.amount:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Something went wrong : " + str(e)
-        )
-
-    account.balance -= request.amount
-    transaction = DbTransaction(
-        amount=request.amount,
-        transaction_type="withdraw",
-        card_id=card.id,
-        account_id=account_id,
-    )
-    db.add(transaction)
-    
-    # transaction
-    try:
-        db.commit()
-        db.refresh(account)
-        db.refresh(card)
-        db.refresh(transaction)
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={
-                "message": "Withdraw successfully.",
-                "balance": account.balance,
-                "transaction_id": transaction.id,
-            },
-        )
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Something went wrong."
-        )
-
-
-def db_deposit(request: AccountAuth, db: Session, account_id: int):
-    card = db.query(DbCard).filter(DbCard.number == request.number).first()
-    if not card.account_id == account_id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="you are not authorized to perform this action.",
-        )
-    if not card:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Card not found."
-        )
-    if not Hash.verify(card.password, request.password):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password."
-        )
-    account = db.query(DbAccount).filter(DbAccount.id == account_id).first()
-    account.balance += request.amount
-    transaction = DbTransaction(
-        amount=request.amount,
-        transaction_type="deposit",
-        card_id=card.id,
-        account_id=account_id,
-    )
-    db.add(transaction)
-    try:
-        db.commit()
-        db.refresh(account)
-        db.refresh(card)
-        db.refresh(transaction)
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={
-                "message": "Deposit successfully.",
-                "balance": account.balance,
-                "transaction_id": transaction.id,
-            },
-        )
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Something went wrong : " + str(e)
-        )

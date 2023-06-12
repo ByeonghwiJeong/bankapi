@@ -29,6 +29,7 @@ class DbCard(Base):
     account = relationship("DbAccount", back_populates="cards")
     transactions = relationship("DbTransaction", back_populates="card")
 
+
 class TransactionType(PyEnum):
     DEPOSIT = "deposit"
     WITHDRAW = "withdraw"

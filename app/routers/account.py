@@ -2,7 +2,7 @@ from sqlalchemy.orm.session import Session
 from app.routers.schemes import Account, AccountAuth, CardAuth
 from app.db.database import get_db
 from app.auth.oauth2 import get_current_account
-from app.db import db_account
+from app.db import db_account, db_tranaction
 from fastapi import APIRouter, Depends
 
 
@@ -32,7 +32,7 @@ async def withdraw(
     db: Session = Depends(get_db),
     account_id: int = None,
 ):
-    return db_account.db_withdraw(request, db, account_id)
+    return db_tranaction.db_withdraw(request, db, account_id)
 
 
 @router.post("/{account_id}/deposit")
@@ -41,4 +41,4 @@ async def deposit(
     db: Session = Depends(get_db),
     account_id: int = None,
 ):
-    return db_account.db_deposit(request, db, account_id)
+    return db_tranaction.db_deposit(request, db, account_id)

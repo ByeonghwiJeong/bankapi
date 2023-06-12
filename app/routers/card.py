@@ -22,7 +22,6 @@ async def register_card(
     return db_card.register_card(db, request, current_account)
 
 
-
 @router.put("")
 async def update_active_card(
     request: UpdateCard,

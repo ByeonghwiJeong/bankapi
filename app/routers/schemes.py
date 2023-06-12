@@ -26,12 +26,14 @@ class RegisterCard(BaseModel):
         title="Card Password",
         regex="^\d{4}$",
     )
+
     class Config:
         schema_extra = {
             "example": {
                 "password": "6008",
             }
         }
+
 
 class UpdateCard(BaseModel):
     password: str = Field(
@@ -40,6 +42,7 @@ class UpdateCard(BaseModel):
         regex="^\d{4}$",
     )
     number: str
+
 
 class Card(BaseModel):
     id: int

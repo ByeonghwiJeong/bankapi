@@ -19,11 +19,16 @@ def register_card(db: Session, request: RegisterCard, current_account: AccountAu
     db.refresh(new_card)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
-        content={"message": "Card registered successfully.", "card_number": new_card.number},
+        content={
+            "message": "Card registered successfully.",
+            "card_number": new_card.number,
+        },
     )
 
 
-def update_card_activation(db: Session, request: UpdateCard, current_account: AccountAuth):
+def update_card_activation(
+    db: Session, request: UpdateCard, current_account: AccountAuth
+):
     card = db.query(DbCard).filter(DbCard.number == request.number).first()
     if (not card) or (card.account_id != current_account.id):
         raise HTTPException(
