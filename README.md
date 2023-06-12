@@ -2,7 +2,7 @@
 
 ## 요구사항 구현 리스트
 
-- [x] Create user account
+- [x] ~~Create user account~~
 - [x] Register cards(plural!)
 - [x] Disable card
 - [x] Enable card
